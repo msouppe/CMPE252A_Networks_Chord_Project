@@ -76,6 +76,8 @@ Node* Node::find_predecessor(uint64_t id_){
 	Node* predecessor = this;
 	while ( !(((uint64_t)predecessor->getId() < id_) && \
 			(id_ <= (uint64_t)predecessor->fingerTable_.getFingerTableData_successor(1)->getId()))) {
+		cout << "this->id_ = " << predecessor->getId() << endl;
+		cout << "id_  = " << id_ << endl;
 		predecessor = predecessor->closest_preceding_finger(id_);
 	}
 	return predecessor;
@@ -83,7 +85,11 @@ Node* Node::find_predecessor(uint64_t id_){
 
 Node* Node::closest_preceding_finger(uint64_t id_){
 	cout << "Node::closest_preceding_finger" << endl;
+	cout << id_ << endl;
 	for (int i = BITLENGTH; i >= 1; i--) {
+		cout << i << endl;
+		cout << "this->getId() = " << this->getId() << endl;
+		cout << "this->fingerTable_.getFingerTableData_successor(i)->getId() = " << this->fingerTable_.getFingerTableData_successor(i)->getId() << endl;
 		if (( this->getId() < this->fingerTable_.getFingerTableData_successor(i)->getId()) && \
 				(id_ > this->fingerTable_.getFingerTableData_successor(i)->getId())) {
 			cout << "Node::closest_preceding_finger -- in if condition" << endl;

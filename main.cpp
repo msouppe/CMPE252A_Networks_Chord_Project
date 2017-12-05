@@ -8,7 +8,7 @@
 #include <math.h>
 #include "node.h"
 
-#define BITLENGTH 8
+#define BITLENGTH 3
 
 using namespace std;
 

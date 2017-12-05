@@ -83,7 +83,8 @@ class Node {
 
 		//TODO: implement node join function
 		/**
-		 * @param node: the first node to contact with to initialize join process. If this is the first node to join the Chord network, the parameter is NULL.
+		 * @param node: the first node to contact with to initialize join process.
+		 * If this is the first node to join the Chord network, the parameter is NULL.
 		 */
 		void join(Node* node);
 
