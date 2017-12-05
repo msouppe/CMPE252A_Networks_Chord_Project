@@ -55,6 +55,8 @@ class FingerTable{
 		}
 
 		Node* getFingerTableData_successor(size_t index) {
+			cout << "FingerTable::getFingerTableData_successor " << endl;
+			cout << this->fingerTable_[index]->success << endl;
 			return this->fingerTable_[index]->success;
 		}
 
