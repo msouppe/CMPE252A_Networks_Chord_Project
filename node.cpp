@@ -74,7 +74,8 @@ Node* Node::find_successor(uint64_t id_){
 Node* Node::find_predecessor(uint64_t id_){
 	cout << "Node::find_predecessor()" << endl;
 	Node* predecessor = this;
-	while ( !(((uint64_t)predecessor->getId() < id_) && (id_ <= (uint64_t)predecessor->fingerTable_.getFingerTableData_successor(1)->getId()))) {
+	while ( !(((uint64_t)predecessor->getId() < id_) && \
+			(id_ <= (uint64_t)predecessor->fingerTable_.getFingerTableData_successor(1)->getId()))) {
 		predecessor = predecessor->closest_preceding_finger(id_);
 	}
 	return predecessor;
