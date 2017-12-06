@@ -22,7 +22,7 @@ int main() {
 	n1.join(&n0);
 	cout << "\nAfter n1.join(&n0)\n\n";
 	n0.getFingerTable().prettyPrint();
-	n0.getFingerTable().prettyPrint();
+	n1.getFingerTable().prettyPrint();
 
 	return 0;
 }

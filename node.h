@@ -25,12 +25,11 @@ class FingerTable{
 		int start;
 		int interval[2];
 		Node* success;
-
-		void structPrint() {
-			cout << "start: " << start <<  endl;
-//			cout << "start: " << start << "\tinterval: [" << interval[0] << "," << interval[1] << ")" << endl;
-		}
 	};
+
+	private:
+		uint8_t nodeId_;
+		vector<fingertable_data*> fingerTable_;
 
 	public:
 		FingerTable(uint8_t nodeId) {
@@ -41,72 +40,61 @@ class FingerTable{
 
 			this->set_start(nodeId_);
 			this->set_interval(nodeId_);
-
 			cout << "FingerTable Constructor" << endl;
 		}
 
+		// Init FingerTable set node's start value
 		void set_start(uint8_t nodeId_);
 
+		// Init FingerTable set node's interval
 		void set_interval(uint8_t nodeId_);
 
-		void set_successor(size_t index, Node* successor){
-			cout << "FingerTable::set_successor() " << endl;
-			this->fingerTable_[index]->success = successor;
-		}
+		// Init FingerTable set node's successor
+		void set_successor(size_t index, Node* successor);
 
-		Node* getFingerTableData_successor(size_t index) {
-			cout << "FingerTable::getFingerTableData_successor " << endl;
-			cout << this->fingerTable_[index]->success << endl;
-			return this->fingerTable_[index]->success;
-		}
+		// Get node in a FingerTable, return that node
+		Node* getFingerTableData_successor(size_t index);
 
-		uint64_t getFingerTableData_start(size_t index) {
-			return this->fingerTable_[index]->start;
-		}
+		// Get start value in a FingerTable, return that value
+		uint64_t getFingerTableData_start(size_t index);
+
+		// TODO: Print out FingerTable nicely
+		void prettyPrint();
 
 		// note Node* was changed from uint8_t
 		fingertable_data* get(size_t index) {
 			return fingerTable_[index];
 		}
-
-		// TODO: complete print function
-		void prettyPrint();
-
-	private:
-		uint8_t nodeId_;
-		vector<fingertable_data*> fingerTable_;
 };
 
 class Node {
+	private:
+		uint64_t id_;
+		FingerTable fingerTable_;
+		map<uint8_t, uint8_t> localKeys_;
+
 	public:
 		Node(uint8_t id): id_(id), fingerTable_(id) {}
 
 		//TODO: implement node join function
-		/**
-		 * @param node: the first node to contact with to initialize join process.
-		 * If this is the first node to join the Chord network, the parameter is NULL.
-		 */
 		void join(Node* node);
 
 		//TODO: implement DHT lookup
 		uint8_t find(uint8_t key);
 
 		//TODO: implement DHT key insertion
-		// Insert key VALUE
 		void insert(uint8_t key);
 
 		//TODO: implement DHT key deletion
 		void remove(uint8_t key);
 
-		int getId() {
-			return (int)this->id_;
-		}
+		// Get node's Id
+		int getId();
 
-		FingerTable getFingerTable() {
-			return this->fingerTable_;
-		}
+		// Get FingerTable
+		FingerTable getFingerTable();
 
-		// Extra helper functions
+		// Update FingerTable
 		void updateTable();
 
 		// Ask node n to find id's successor
@@ -118,13 +106,6 @@ class Node {
 		// Return closest finger preceding id
 		Node* closest_preceding_finger(uint64_t id_);
 
-		// Check fingertable empty
-//		bool check_table_empty();
-
-	private:
-		uint64_t id_;
-		FingerTable fingerTable_;
-		map<uint8_t, uint8_t> localKeys_; // ex) node 4, value "blah"
 };
 
 #endif /* NODE_H_ */

@@ -16,21 +16,17 @@
 using namespace std;
 
 void FingerTable::set_start(uint8_t nodeId_){
-	cout << "FingerTable::set_start()" << endl;
+	cout << "INIT FingerTable - set_start()" << endl;
 	for (int i = 1; i <= BITLENGTH; i++) {
 		fingertable_data* table = new fingertable_data;
 		// (n +2^(k-1)) mod 2^m, n = nodeId_, k = iterate, m = BITLENGTH
 		table->start = fmod (((int)nodeId_ + (int)pow(2, i-1)) , (int)pow(2, BITLENGTH));
-//		cout << table->start << endl;
-//		cout<< "------" << endl;
 		this->fingerTable_[i] = table;
-//		cout<< "-----*" << endl;
-//		cout << "\t" << this->fingerTable_[i]->start << endl;
 	}
 }
 
 void FingerTable::set_interval(uint8_t nodeId_){
-	cout << "FingerTable::set_interval()" << endl;
+	cout << "INIT FingerTable - set_interval()" << endl;
 	for (int i = 1; i <= BITLENGTH; i++) {
 		if (i == BITLENGTH) {
 			this->fingerTable_[i]->interval[0] = this->fingerTable_[i]->start;
@@ -42,6 +38,22 @@ void FingerTable::set_interval(uint8_t nodeId_){
 	}
 }
 
+void FingerTable::set_successor(size_t index, Node* successor){
+	cout << "FingerTable::set_successor() " << endl;
+	this->fingerTable_[index]->success = successor;
+}
+
+uint64_t FingerTable::getFingerTableData_start(size_t index) {
+	return this->fingerTable_[index]->start;
+}
+
+Node* FingerTable::getFingerTableData_successor(size_t index) {
+	cout << "FingerTable::getFingerTableData_successor " << endl;
+	cout << this->fingerTable_[index]->start << endl;
+	cout << this->fingerTable_[index]->success << endl;
+	return this->fingerTable_[index]->success;
+}
+
 void FingerTable::prettyPrint() {
 	cout << "\nStart \t Interval \t Successor" << endl;
 	for (int i = 1; i <= BITLENGTH; i++) {
@@ -51,10 +63,19 @@ void FingerTable::prettyPrint() {
 	}
 }
 
+int Node::getId() {
+	return (int)this->id_;
+}
+
+FingerTable Node::getFingerTable() {
+	return this->fingerTable_;
+}
+
 void Node::join(Node* node) {
 	cout << "Node::join()" << endl;
 	if (node != NULL) {
-		cout << "Node::join() -> adding second node into network" << endl;
+		cout << "**Node::join() -> adding second node into network" << endl;
+//		cout << this->find_successor(getId()) << endl;
 		this->find_successor(getId());
 	}
 	else {
@@ -85,10 +106,9 @@ Node* Node::find_predecessor(uint64_t id_){
 
 Node* Node::closest_preceding_finger(uint64_t id_){
 	cout << "Node::closest_preceding_finger" << endl;
-	cout << id_ << endl;
 	for (int i = BITLENGTH; i >= 1; i--) {
-		cout << i << endl;
 		cout << "this->getId() = " << this->getId() << endl;
+		cout << "condition: " << ( this->getId() < this->fingerTable_.getFingerTableData_successor(i)->getId()) << endl;
 		cout << "this->fingerTable_.getFingerTableData_successor(i)->getId() = " << this->fingerTable_.getFingerTableData_successor(i)->getId() << endl;
 		if (( this->getId() < this->fingerTable_.getFingerTableData_successor(i)->getId()) && \
 				(id_ > this->fingerTable_.getFingerTableData_successor(i)->getId())) {
@@ -113,11 +133,10 @@ void Node::insert(uint8_t key) {
 void Node::remove(uint8_t key) {
 	// Update fingertable
 }
+
+
 /*
 Resources:
 	https://www.cs.cmu.edu/~dga/15-744/S07/lectures/16-dht.pdf
 	https://www.linuxjournal.com/article/6797
 */
-
-
-
