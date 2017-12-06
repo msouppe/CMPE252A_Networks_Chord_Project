@@ -63,14 +63,6 @@ void FingerTable::prettyPrint() {
 	}
 }
 
-int Node::getId() {
-	return (int)this->id_;
-}
-
-FingerTable Node::getFingerTable() {
-	return this->fingerTable_;
-}
-
 void Node::join(Node* node) {
 	cout << "Node::join()" << endl;
 	if (node != NULL) {
@@ -84,6 +76,28 @@ void Node::join(Node* node) {
 			this->fingerTable_.set_successor(i,tempNode);
 		}
 	}
+}
+
+uint8_t Node::find(uint8_t key) {
+	// use fingertable?
+	uint8_t yo = 0;
+	return yo;
+}
+
+void Node::insert(uint8_t key) {
+	// Insert in the fingertable?
+}
+
+void Node::remove(uint8_t key) {
+	// Update fingertable
+}
+
+int Node::getId() {
+	return (int)this->id_;
+}
+
+FingerTable Node::getFingerTable() {
+	return this->fingerTable_;
 }
 
 Node* Node::find_successor(uint64_t id_){
@@ -119,21 +133,6 @@ Node* Node::closest_preceding_finger(uint64_t id_){
 	}
 	return this;
 }
-
-uint8_t Node::find(uint8_t key) {
-	// use fingertable?
-	uint8_t yo = 0;
-	return yo;
-}
-
-void Node::insert(uint8_t key) {
-	// Insert in the fingertable?
-}
-
-void Node::remove(uint8_t key) {
-	// Update fingertable
-}
-
 
 /*
 Resources:

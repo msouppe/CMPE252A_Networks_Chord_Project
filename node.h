@@ -52,11 +52,11 @@ class FingerTable{
 		// Init FingerTable set node's successor
 		void set_successor(size_t index, Node* successor);
 
-		// Get node in a FingerTable, return that node
-		Node* getFingerTableData_successor(size_t index);
-
 		// Get start value in a FingerTable, return that value
 		uint64_t getFingerTableData_start(size_t index);
+
+		// Get node in a FingerTable, return that node
+		Node* getFingerTableData_successor(size_t index);
 
 		// TODO: Print out FingerTable nicely
 		void prettyPrint();
