@@ -1,6 +1,6 @@
 /*
  *	Filename: node.h
- *  Author: Mariette Souppe
+ *	Author: Mariette Souppe
  */
 
 #ifndef NODE_H_
@@ -16,10 +16,11 @@
 
 using namespace std;
 
-//forward declaration
+// Forward declaration
 class Node;
 
-//Since the index uniquely determines the interval, only the successor needs to be maintained.
+// Since the index uniquely determines the interval,
+// only the successor needs to be maintained.
 class FingerTable{
 	struct fingertable_data {
 		int start;
@@ -40,7 +41,7 @@ class FingerTable{
 
 			this->set_start(nodeId_);
 			this->set_interval(nodeId_);
-			cout << "FingerTable Constructor" << endl;
+//			cout << "FingerTable Constructor" << endl;
 		}
 
 		// Init FingerTable set node's start value
@@ -76,16 +77,16 @@ class Node {
 	public:
 		Node(uint8_t id): id_(id), fingerTable_(id) {}
 
-		//TODO: implement node join function
+		// TODO: implement node join function
 		void join(Node* node);
 
-		//TODO: implement DHT lookup
+		// TODO: implement DHT lookup
 		uint8_t find(uint8_t key);
 
-		//TODO: implement DHT key insertion
+		// TODO: implement DHT key insertion
 		void insert(uint8_t key);
 
-		//TODO: implement DHT key deletion
+		// TODO: implement DHT key deletion
 		void remove(uint8_t key);
 
 		// Get node's Id

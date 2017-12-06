@@ -1,6 +1,6 @@
 /*
  *	Filename: main.cpp
- *  Author: Mariette Souppe
+ *	Author: Mariette Souppe
  */
 
 
