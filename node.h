@@ -80,6 +80,8 @@ class Node {
 		// TODO: implement node join function
 		void join(Node* node);
 
+		void initNodesFingerTable(Node* node);
+
 		// TODO: implement DHT lookup
 		uint8_t find(uint8_t key);
 
@@ -96,7 +98,7 @@ class Node {
 		FingerTable getFingerTable();
 
 		// Update FingerTable
-		void updateTable();
+		void update_other_tables();
 
 		// Ask node n to find id's successor
 		Node* find_successor(uint64_t id_);
