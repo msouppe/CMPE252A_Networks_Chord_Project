@@ -81,19 +81,21 @@ void Node::join(Node* node) {
 }
 
 void Node::initNodesFingerTable(Node* node) {
-	 this->fingerTable_.set_successor(1, node->find_successor(this->fingerTable_.getFingerTableData_start(1)));
-	 Node* successor = this->fingerTable_.getFingerTableData_successor(1);
-	 Node* predecessor = successor->find_predecessor(successor->getId());
-	 successor->find_predecessor(successor->getId()) = this;
+	 this->fingerTable_.set_successor(1, node->find_successor(this->fingerTable_.getFingerTableData_start(1))); // finger[1].node = n'.find_successor(finger[1].start)
+	 Node* successor = this->fingerTable_.getFingerTableData_successor(1); //finger[1].node
+	 Node* predecessor = successor->find_predecessor(successor->getId()); // predecessor  = finger[1].node.predecessor
+	 successor->find_predecessor(successor->getId()) = this; // finger[1].node.predecessor = n
 
-	 for (int i = 1; i < (BITLENGTH - 1); i++) {
-		 int n_start = this->fingerTable_.getFingerTableData_start(i+1);
-		 int n_id = this->getId();
-		 int n_successor = this->fingerTable_.getFingerTableData_successor(i)->getId();
-		 if ( n_start >= n_id && n_start < n_successor) { // if (n <= finger[i].start < )
+	 for (int i = 1; i < (BITLENGTH - 1); i++) { // from i=1 to m-1
+		 int n_start = this->fingerTable_.getFingerTableData_start(i+1); // finger[i+1].start
+		 int n_id = this->getId(); // n
+		 int n_successor = this->fingerTable_.getFingerTableData_successor(i)->getId(); // finger[i].node
+		 if ( n_start >= n_id && n_start < n_successor) { // if (n <= finger[i].start < finger[i].node)
+			 // finger[i+1].node = finger[i].node
 			 this->fingerTable_.set_successor(i+1, this->fingerTable_.getFingerTableData_successor(i));
 		 }
 		 else {
+			 // finger[i+1].node = n'.find_successor(finger[i+1].start)
 			 this->fingerTable_.set_successor(i+1, node->find_successor(this->fingerTable_.getFingerTableData_start(i+1)));
 		 }
 	 }
@@ -142,13 +144,13 @@ FingerTable Node::getFingerTable() {
 
 Node* Node::find_successor(uint64_t id_){
 	cout << endl << "Node::find_successor()" << endl;
-	Node* predecessor = this->find_predecessor(id_);
-	return predecessor->fingerTable_.getFingerTableData_successor(1);
+	Node* predecessor = this->find_predecessor(id_); // n' = find_predecessor(id)
+	return predecessor->fingerTable_.getFingerTableData_successor(1); //n'.successor
 }
 
 Node* Node::find_predecessor(uint64_t id_){
 	cout << endl << "Node::find_predecessor()" << endl;
-	Node* predecessor = this;
+	Node* predecessor = this; // n' = n
 	cout << "condition 1 compares:\t" << (uint64_t)predecessor->getId() << " < " << id_ << endl;
 	cout << "condition 2 compares:\t" << id_ << " <= " << (uint64_t)predecessor->fingerTable_.getFingerTableData_successor(1)->getId() << endl;
 	bool n_id= ((uint64_t)predecessor->getId() < id_);
@@ -161,13 +163,13 @@ Node* Node::find_predecessor(uint64_t id_){
 			cout << "Break out of find_predcessor()" << endl;
 			break;
 		}
-		predecessor = predecessor->closest_preceding_finger(id_);
+		predecessor = predecessor->closest_preceding_finger(id_); // n' = n'.closet_preceding_finger(id)
 		cout << "in while: " << predecessor->getId() << endl;
 		n_id= ((uint64_t)predecessor->getId() < id_);
 		n_suc_id = (id_ <= (uint64_t)predecessor->fingerTable_.getFingerTableData_successor(1)->getId());
 //		break;
 	}
-	return predecessor;
+	return predecessor; // return n
 }
 
 Node* Node::closest_preceding_finger(uint64_t id_){
@@ -175,15 +177,16 @@ Node* Node::closest_preceding_finger(uint64_t id_){
 	cout  << "n: " << this->getId() << "\t id: " << id_ << endl;
 	for (int i = BITLENGTH; i >= 1; i--) { // for i =m to 1
 		cout << "i: " << i << endl;
-		cout << "condition 1: n= " << this->getId() << "\t < \tfingerT entry: " << this->fingerTable_.getFingerTableData_successor(i)->getId() << endl;
-		cout << "condition 2: id= " << id_ << "\t > \tfingerT entry: "  << (this->fingerTable_.getFingerTableData_successor(i)->getId()) << endl;
+		cout << "condition 1: n= " << this->getId() << "\t < \tfingerT entry: " << \
+				this->fingerTable_.getFingerTableData_successor(i)->getId() << endl;
+		cout << "condition 2: id= " << id_ << "\t > \tfingerT entry: "  << \
+				(this->fingerTable_.getFingerTableData_successor(i)->getId()) << endl;
 		if (( this->getId() < this->fingerTable_.getFingerTableData_successor(i)->getId()) && \
 				(id_ > this->fingerTable_.getFingerTableData_start(i))) { // if (n < finger[i].node < id)
-			cout << "INSIDE if condition Node::closest_preceding_finger" << endl;
-			return this->fingerTable_.getFingerTableData_successor(i);
+			return this->fingerTable_.getFingerTableData_successor(i); // return finger[i].node
 		}
 	}
-	return this;
+	return this; // return n
 }
 
 /*
