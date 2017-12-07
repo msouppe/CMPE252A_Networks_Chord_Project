@@ -80,7 +80,14 @@ class Node {
 		// TODO: implement node join function
 		void join(Node* node);
 
+		// Initialize finger table of local node
 		void initNodesFingerTable(Node* node);
+
+		// Update all nodes whose finger tables should refer to n
+		void update_others();
+
+		// If node is index-th finger of n, update n’s finger table with node
+		void update_finger_table(Node* node, int index);
 
 		// TODO: implement DHT lookup
 		uint8_t find(uint8_t key);
@@ -96,9 +103,6 @@ class Node {
 
 		// Get FingerTable
 		FingerTable getFingerTable();
-
-		// Update FingerTable
-		void update_other_tables();
 
 		// Ask node n to find id's successor
 		Node* find_successor(uint64_t id_);
