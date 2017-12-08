@@ -84,7 +84,7 @@ void Node::initNodesFingerTable(Node* node) {
 	 this->fingerTable_.set_successor(1, node->find_successor(this->fingerTable_.getFingerTableData_start(1))); // finger[1].node = n'.find_successor(finger[1].start)
 	 Node* successor = this->fingerTable_.getFingerTableData_successor(1); //finger[1].node
 	 Node* predecessor = successor->find_predecessor(successor->getId()); // predecessor  = finger[1].node.predecessor
-	 successor->find_predecessor(successor->getId()) = this; // finger[1].node.predecessor = n
+//	 successor->find_predecessor(successor->getId()) = this; // finger[1].node.predecessor = n
 
 	 for (int i = 1; i < (BITLENGTH - 1); i++) { // from i=1 to m-1
 		 int n_start = this->fingerTable_.getFingerTableData_start(i+1); // finger[i+1].start
