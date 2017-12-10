@@ -71,12 +71,17 @@ class FingerTable{
 		fingertable_data* get(size_t index) {
 			return fingerTable_[index];
 		}
+
+		int FingerTableVectorSize(){
+			return this->fingerTable_.size();
+		}
 };
 
 class Node {
 	private:
 		uint64_t id_;
 		FingerTable fingerTable_;
+		Node* successor;
  		Node* predecessor;
 		map<uint8_t, uint8_t> localKeys_;
 
@@ -99,9 +104,9 @@ class Node {
 		uint8_t find(uint8_t key);
 
 		// TODO: implement DHT key insertion
-		void insert(uint8_t key);
+		void insert(uint8_t key, uint8_t value);
 
-		// TODO: implement DHT key deletion
+		// TODO: implement DHT key remove
 		void remove(uint8_t key);
 
 		// Get node's Id
@@ -125,6 +130,7 @@ class Node {
 		// Return closest finger preceding id
 		Node* closest_preceding_finger(uint64_t id_);
 
+		void prettyPrint();
 };
 
 #endif /* NODE_H_ */
