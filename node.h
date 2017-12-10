@@ -23,10 +23,15 @@ class Node;
 // only the successor needs to be maintained.
 class FingerTable{
 	struct fingertable_data {
+		// finger[k].start
 		int start;
+
+		// finger[k].interval = [finger[k].start, finger[k+1].start)
 		int interval[2];
+
+		// finger[k].node
 		Node* success;
-	};
+};
 
 	private:
 		uint8_t nodeId_;
@@ -72,6 +77,7 @@ class Node {
 	private:
 		uint64_t id_;
 		FingerTable fingerTable_;
+ 		Node* predecessor;
 		map<uint8_t, uint8_t> localKeys_;
 
 	public:
@@ -100,6 +106,12 @@ class Node {
 
 		// Get node's Id
 		int getId();
+
+		// Set predecessor
+		void set_predecessor(Node* node);
+
+		// Get predecessor
+		Node* get_predecessor();
 
 		// Get FingerTable
 		FingerTable getFingerTable();

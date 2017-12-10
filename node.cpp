@@ -67,24 +67,30 @@ void FingerTable::prettyPrint() {
 void Node::join(Node* node) {
 	cout << endl << "Node::join()" << endl;
 	if (node != NULL) {
-		cout << "Adding new node into network" << endl;
+		cout << "Adding new node into network: NodeId - " << this->getId() << endl;
+		cout << "new node = " << this->getId() << " \t node in network = " << node->getId() << endl;
 		this->initNodesFingerTable(node);
 		this->update_others();
+//		this->fingerTable_.prettyPrint(); // print finger table when new node joins network
 	}
 	else {
-		cout << "First node in the network" << endl;
+		cout << "First node in the network: NodeId - " << this->getId() << endl;
 		for (int i = 1; i <= BITLENGTH; i++) {
 			Node* tempNode = this;
 			this->fingerTable_.set_successor(i,tempNode);
 		}
+		this->predecessor = this; // predecessor = n
+		cout << "predecessor\t" << this->predecessor->getId() << endl;
+		this->fingerTable_.prettyPrint(); // print finger table when new node joins network
 	}
 }
 
 void Node::initNodesFingerTable(Node* node) {
+	cout << endl << "Node::initNodesFingerTable()" << endl;
 	 this->fingerTable_.set_successor(1, node->find_successor(this->fingerTable_.getFingerTableData_start(1))); // finger[1].node = n'.find_successor(finger[1].start)
-	 Node* successor = this->fingerTable_.getFingerTableData_successor(1); //finger[1].node
-	 Node* predecessor = successor->find_predecessor(successor->getId()); // predecessor  = finger[1].node.predecessor
-//	 successor->find_predecessor(successor->getId()) = this; // finger[1].node.predecessor = n
+	 Node* successor = this->fingerTable_.getFingerTableData_successor(1); // finger[1].node
+	 predecessor = successor->predecessor; // predecessor  = finger[1].node.predecessor
+	 successor->predecessor = this; // finger[1].node.predecessor = n
 
 	 for (int i = 1; i < (BITLENGTH - 1); i++) { // from i=1 to m-1
 		 int n_start = this->fingerTable_.getFingerTableData_start(i+1); // finger[i+1].start
@@ -102,6 +108,7 @@ void Node::initNodesFingerTable(Node* node) {
 }
 
 void Node::update_others(){
+	cout << endl << "Node::update_others()" << endl;
 	for (int i = 1; i <= BITLENGTH; i++) { //for i=1 to m
 		Node* p = find_predecessor(this->getId() - pow(2, i-1)); // p = find_predecessor(n - 2^(i-1))
 		p->update_finger_table(this, i); // p.update_finger_table(n, i)
@@ -109,13 +116,14 @@ void Node::update_others(){
 }
 
 void Node::update_finger_table(Node* node, int index) {
+	cout << endl << "Node::update_finger_table()" << endl;
 	int node_id = node->getId(); // s
 	int this_id = this->getId(); // n
 	int n_successor = this->fingerTable_.getFingerTableData_successor(index)->getId(); // finger[i].node
 
 	if ( this_id <= node_id && node_id < n_successor ) { // if (n <= s < finger[i].node)
 		this->fingerTable_.set_successor(index, node); // finger[i].node = s
-		Node* p; // p = predecessor ??
+		Node* p = predecessor;
 		p->update_finger_table(node, index); // p.update_finger_table(s,index)
 	}
 }
@@ -136,6 +144,14 @@ void Node::remove(uint8_t key) {
 
 int Node::getId() {
 	return (int)this->id_;
+}
+
+void Node::set_predecessor(Node* node) {
+	this->predecessor = node;
+}
+
+Node* Node::get_predecessor() {
+	return this->predecessor;
 }
 
 FingerTable Node::getFingerTable() {

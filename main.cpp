@@ -17,7 +17,7 @@ int main() {
 
 	Node n0(4);
 	n0.join(NULL);
-	n0.getFingerTable().prettyPrint();
+//	n0.getFingerTable().prettyPrint();
 	Node n1(1);
 	n1.join(&n0);
 	cout << "\nAfter n1.join(&n0)\n\n";
