@@ -81,7 +81,7 @@ class Node {
 	private:
 		uint8_t id_;
 		FingerTable fingerTable_;
-		Node* successor;
+		Node* Nodessuccessor;
  		Node* predecessor;
 		map<uint8_t, uint8_t> localKeys_;
 

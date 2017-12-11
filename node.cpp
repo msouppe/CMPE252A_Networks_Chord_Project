@@ -61,47 +61,41 @@ void FingerTable::prettyPrint() {
 }
 
 void Node::prettyPrint() {
-	cout << endl << "Node Id: " << this->getId();
+	cout <<"Node Id: " << this->getId();
 	this->fingerTable_.prettyPrint();
-//	cout << "Successor: " << this->fingerTable_.getFingerTableData_successor(1)->getId() << endl;
-	cout << "Predecessor: " << this->predecessor->getId() << endl;
-	map<uint8_t, uint8_t>::const_iterator it;
-
-	for( it = localKeys_.begin(); it != localKeys_.end(); it++){
-		cout << "{" << (int)it->first << "," << (int)it->second << "} ";
-	  }
-	cout << endl;
+	cout << "Predecessor: " << this->predecessor->getId()<<endl;
+//	map<uint8_t, uint8_t>::const_iterator Printit;
+//
+//	for( Printit = localKeys_.begin(); Printit != localKeys_.end(); Printit++){
+//		cout << "{" << (int)Printit->first << "," << (int)Printit->second << "} ";
+//	  }
 }
 
 void Node::join(Node* node) {
 	if (node != NULL) {
+		cout <<"--------------------------------------------------------------------------\n";
+		cout << " Adding new node into network, updating other nodes in network\n";
+		cout <<"--------------------------------------------------------------------------\n\n";
 		this->initNodesFingerTable(node);
 		this->update_others();
-//		this->prettyPrint();
+		this->prettyPrint();
 		// Move keys around
+		cout << "Moved keys: ";
 		Node* sucessor = this->fingerTable_.getFingerTableData_successor(1);
 		map<uint8_t, uint8_t>::iterator it = sucessor->localKeys_.begin();
-		cout << "Moved keys: ";
-		bool wrap = false;
-		if(node->getId() < this->getId()) {
-			wrap = true;
-		}
-		while (it != sucessor->localKeys_.end()){
-		//for(auto it = sucessor->localKeys_.begin(); it != sucessor->localKeys_.end(); it++){
-			//cout << (int)it->first << " <= " << this->getId() << "  ||  " << (int)it->first << " > " << sucessor->getId() << endl;
-			//cout << "Node::join for loop\nOn node " << this->getId()<< " \nSuccessor: " << sucessor->getId() <<" \nIt->first: "<< (int)it->first << endl;
+		while (it != sucessor->localKeys_.end()) {
 			if(((int)it->first <= this->getId()) || ((int)it->first > sucessor->getId())) {
-				//cout << "Inside da if statement\n";
 				cout << "{" << (int)it->first << "," << (int)it->second <<"} ";
 				uint8_t tempFirst = it->first;
 				uint8_t tempSecond = it->second;
 				this->insert(tempFirst, tempSecond);
 				sucessor->localKeys_.erase(it++);
-			}else{
+			} else {
 				++it;
 			}
 		}
-		this->prettyPrint();
+		cout << "\n\n";
+		node->prettyPrint();
 	}
 	else {
 		for (int i = 1; i <= BITLENGTH; i++) {
@@ -109,12 +103,17 @@ void Node::join(Node* node) {
 			this->fingerTable_.set_successor(i,tempNode);
 		}
 		this->predecessor = this; // predecessor = n
+		cout <<"-------------------------------\n";
+		cout << "  First node in the network\n";
+		cout <<"-------------------------------\n\n";
 		this->prettyPrint(); // Print fingerTable of first node in the network
+		cout<< "\n";
 	}
 }
 
 void Node::initNodesFingerTable(Node* node) {
 	 this->fingerTable_.set_successor(1, node->find_successor(this->fingerTable_.getFingerTableData_start(1))); // finger[1].node = n'.find_successor(finger[1].start)
+	 Nodessuccessor = this->fingerTable_.getFingerTableData_successor(1);
 	 predecessor = this->success_node->predecessor; // predecessor  = finger[1].node.predecessor
 	 this->success_node->predecessor = this; // finger[1].node.predecessor = n
 	 Node* tempSuccessor;
@@ -165,7 +164,7 @@ void Node::update_finger_table(Node* node, int index) {
 
 uint8_t Node::find(uint8_t key)  {
 	PRINT_N_SEQ = true;
-	cout << "Sequence: " << this->getId() << " ";
+	cout << "\nNode Sequence to find key="<<(int)key<<": " << this->getId() << " ";
 	Node* temp = this->find_successor(key);
 	cout << temp->getId() << endl;
     auto search = temp->localKeys_.find(key);
