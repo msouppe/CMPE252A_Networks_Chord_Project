@@ -20,6 +20,13 @@ int main() {
 //	n0.getFingerTable().prettyPrint();
 	Node n1(1);
 	n1.join(&n0);
+	Node n2(7);
+	n2.join(&n1);
+	cout << "======================" << endl << endl;
+	n0.getFingerTable().prettyPrint();
+	n1.getFingerTable().prettyPrint();
+	n2.getFingerTable().prettyPrint();
+
 //	cout << "\nAfter n1.join(&n0)\n\n";
 //	n0.getFingerTable().prettyPrint();
 //	n1.getFingerTable().prettyPrint();
