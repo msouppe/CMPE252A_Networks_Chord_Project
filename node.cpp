@@ -11,12 +11,12 @@
 #include <cmath>
 #include "node.h"
 
-#define BITLENGTH 3
+#define BITLENGTH 8
 #define success_node  fingerTable_.getFingerTableData_successor(1)
 
 using namespace std;
 
-int counter = 0;
+bool PRINT_N_SEQ = false;
 
 void FingerTable::set_start(uint8_t nodeId_){
 	for (int i = 1; i <= BITLENGTH; i++) {
@@ -43,7 +43,7 @@ void FingerTable::set_successor(size_t index, Node* successor){
 	this->fingerTable_[index]->success = successor;
 }
 
-uint64_t FingerTable::getFingerTableData_start(size_t index) {
+uint8_t FingerTable::getFingerTableData_start(size_t index) {
 	return this->fingerTable_[index]->start;
 }
 
@@ -61,8 +61,9 @@ void FingerTable::prettyPrint() {
 }
 
 void Node::prettyPrint() {
+	cout << endl << "Node Id: " << this->getId();
 	this->fingerTable_.prettyPrint();
-	cout << "Successor: " << this->fingerTable_.getFingerTableData_successor(1)->getId() << endl;
+//	cout << "Successor: " << this->fingerTable_.getFingerTableData_successor(1)->getId() << endl;
 	cout << "Predecessor: " << this->predecessor->getId() << endl;
 	map<uint8_t, uint8_t>::const_iterator it;
 
@@ -70,24 +71,37 @@ void Node::prettyPrint() {
 		cout << "{" << (int)it->first << "," << (int)it->second << "} ";
 	  }
 	cout << endl;
-
 }
 
 void Node::join(Node* node) {
 	if (node != NULL) {
 		this->initNodesFingerTable(node);
 		this->update_others();
-
+//		this->prettyPrint();
 		// Move keys around
 		Node* sucessor = this->fingerTable_.getFingerTableData_successor(1);
-		map<uint8_t, uint8_t>::const_iterator it;
-		for( it = localKeys_.begin(); it != localKeys_.end(); it++){
-			if((int)it->first <= this->getId()) {
-				this->insert(it->first, it->second);
-				sucessor->remove(it->first);
+		map<uint8_t, uint8_t>::iterator it = sucessor->localKeys_.begin();
+		cout << "Moved keys: ";
+		bool wrap = false;
+		if(node->getId() < this->getId()) {
+			wrap = true;
+		}
+		while (it != sucessor->localKeys_.end()){
+		//for(auto it = sucessor->localKeys_.begin(); it != sucessor->localKeys_.end(); it++){
+			//cout << (int)it->first << " <= " << this->getId() << "  ||  " << (int)it->first << " > " << sucessor->getId() << endl;
+			//cout << "Node::join for loop\nOn node " << this->getId()<< " \nSuccessor: " << sucessor->getId() <<" \nIt->first: "<< (int)it->first << endl;
+			if(((int)it->first <= this->getId()) || ((int)it->first > sucessor->getId())) {
+				//cout << "Inside da if statement\n";
+				cout << "{" << (int)it->first << "," << (int)it->second <<"} ";
+				uint8_t tempFirst = it->first;
+				uint8_t tempSecond = it->second;
+				this->insert(tempFirst, tempSecond);
+				sucessor->localKeys_.erase(it++);
+			}else{
+				++it;
 			}
-		  }
-		cout << endl;
+		}
+		this->prettyPrint();
 	}
 	else {
 		for (int i = 1; i <= BITLENGTH; i++) {
@@ -95,6 +109,7 @@ void Node::join(Node* node) {
 			this->fingerTable_.set_successor(i,tempNode);
 		}
 		this->predecessor = this; // predecessor = n
+		this->prettyPrint(); // Print fingerTable of first node in the network
 	}
 }
 
@@ -149,9 +164,12 @@ void Node::update_finger_table(Node* node, int index) {
 }
 
 uint8_t Node::find(uint8_t key)  {
+	PRINT_N_SEQ = true;
+	cout << "Sequence: " << this->getId() << " ";
 	Node* temp = this->find_successor(key);
+	cout << temp->getId() << endl;
     auto search = temp->localKeys_.find(key);
-    cout << (int)search->second;
+    PRINT_N_SEQ = false;
     return search->second;
 }
 
@@ -181,15 +199,21 @@ FingerTable Node::getFingerTable() {
 	return this->fingerTable_;
 }
 
-Node* Node::find_successor(uint64_t id_){
+Node* Node::find_successor(uint8_t id_){
 	Node* n_ = this->find_predecessor(id_); // n' = find_predecessor(id)
+	if (PRINT_N_SEQ) {
+		cout << n_->getId() << " ";
+	}
+	if (n_->getId() == id_){
+		return n_;
+	}
 	return n_->success_node; //n'.successor
 }
 
-Node* Node::find_predecessor(uint64_t id_){
+Node* Node::find_predecessor(uint8_t id_){
 	Node* p = this; // n' = n
 	Node* previous = p;
-	while (!(((uint64_t)p->getId() < id_)  &&  (id_ <= (uint64_t)p->success_node->getId()))) { // while !(n' < id <= n'.successor)
+	while (!(((uint8_t)p->getId() < id_)  &&  (id_ <= (uint8_t)p->success_node->getId()))) { // while !(n' < id <= n'.successor)
 		p = p->closest_preceding_finger(id_); // n' = n'.closet_preceding_finger(id)
 		if (previous->getId() == p->getId()) {
 			break;
@@ -199,18 +223,17 @@ Node* Node::find_predecessor(uint64_t id_){
 	return p; // return n
 }
 
-Node* Node::closest_preceding_finger(uint64_t id_){
+Node* Node::closest_preceding_finger(uint8_t id_){
 	for (int i = BITLENGTH; i >= 1; i--) { // for i = m to 1
 		int n = this->getId( );
-		this->prettyPrint();
 		int finger_node = (int)this->fingerTable_.getFingerTableData_successor(i)->getId();
 		if (n > (int)id_) { // then wrap around
-			if ((n < finger_node && finger_node <= pow(2,BITLENGTH)-1) || (0 <= finger_node && (uint64_t)finger_node < id_)) {
+			if ((n < finger_node && finger_node <= pow(2,BITLENGTH)-1) || (0 <= finger_node && (uint8_t)finger_node < id_)) {
 					return this->fingerTable_.getFingerTableData_successor(i); // return finger[i].node
 			}
 		}
 		else {  // non- wrap around
-			if ((n < finger_node) && ((uint64_t)finger_node < id_)) { // if (n < finger[i].node < id)
+			if ((n < finger_node) && ((uint8_t)finger_node < id_)) { // if (n < finger[i].node < id)
 				return this->fingerTable_.getFingerTableData_successor(i); // return finger[i].node
 			}
 		}

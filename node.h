@@ -12,7 +12,7 @@
 #include <vector>
 #include <cmath>
 
-#define BITLENGTH 3
+#define BITLENGTH 8
 
 using namespace std;
 
@@ -59,7 +59,7 @@ class FingerTable{
 		void set_successor(size_t index, Node* successor);
 
 		// Get start value in a FingerTable, return that value
-		uint64_t getFingerTableData_start(size_t index);
+		uint8_t getFingerTableData_start(size_t index);
 
 		// Get node in a FingerTable, return that node
 		Node* getFingerTableData_successor(size_t index);
@@ -79,7 +79,7 @@ class FingerTable{
 
 class Node {
 	private:
-		uint64_t id_;
+		uint8_t id_;
 		FingerTable fingerTable_;
 		Node* successor;
  		Node* predecessor;
@@ -122,13 +122,13 @@ class Node {
 		FingerTable getFingerTable();
 
 		// Ask node n to find id's successor
-		Node* find_successor(uint64_t id_);
+		Node* find_successor(uint8_t id_);
 
 		// Ask node n to find id's predecessor
-		Node* find_predecessor(uint64_t id_);
+		Node* find_predecessor(uint8_t id_);
 
 		// Return closest finger preceding id
-		Node* closest_preceding_finger(uint64_t id_);
+		Node* closest_preceding_finger(uint8_t id_);
 
 		void prettyPrint();
 };
